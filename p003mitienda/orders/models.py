@@ -1,5 +1,7 @@
 from django.db import models
 from mitienda.models import Product
+from django.conf import settings
+
 
 class Order(models.Model):
     first_name = models.CharField(max_length=100)
@@ -10,6 +12,7 @@ class Order(models.Model):
     city = models.CharField(max_length=100)
     created = models.DateTimeField(auto_now_add=True)
     paid = models.BooleanField(default=False)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
 
     class Meta:
         ordering = ['-created']
