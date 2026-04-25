@@ -1,0 +1,10 @@
+# --- Entornos Virtuales ---
+# Ignoramos tu carpeta específica y otras comunes
+my_env/
+venv/
+env/
+ENV/
+
+# --- Variables de Entorno (SEGURIDAD) ---
+# Esto evita que tu SECRET_KEY y credenciales se suban a GitHub
+.env
