@@ -1,63 +1,84 @@
-{% extends "tienda/base.html" %}
+{% extends "base.html" %}
 {% load static %}
-{% block title %}
-  Tu carrito
-{% endblock %}
+{% block title %}Tu Carrito - Café Premium{% endblock %}
+
 {% block content %}
-  <div class="container mt-5">
-    <h1>Tu carrito</h1>
-    {% if messages %}
-      <div class="alert alert-info">
-        {% for message in messages %}
-          <p>{{ message }}</p>
-        {% endfor %}
-      </div>
-    {% endif %}
-    <div class="table-responsive">
-      <table class="table table-striped">
-        <thead>
-          <tr>
-            <th>Imagen</th>
-            <th>Producto</th>
-            <th>Cantidad</th>
-            <th>Remover</th>
-            <th>Precio</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in cart %}
-            {% with product=item.product %}
-              <tr>
-                <td>
-                  <a href="{{ product.get_absolute_url }}">
-                    <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no_image.jpg' %}{% endif %}" class="img-fluid" alt="{{ product.name }}" style="max-width: 100px;">
-                  </a>
-                </td>
-                <td>{{ product.name }}</td>
-                <td>{{ item.quantity }}</td>
-                <td>
-                  <form action="{% url "cart:cart_remove" product.id %}" method="post">
-                    <button type="submit" class="btn btn-danger">Remover</button>
-                    {% csrf_token %}
-                  </form>
-                </td>
-                <td>${{ item.price }}</td>
-                <td>${{ item.total_price }}</td>
-              </tr>
-            {% endwith %}
-          {% endfor %}
-          <tr class="table-secondary">
-            <td colspan="5">Total</td>
-            <td>${{ cart.get_total_price }}</td>
-          </tr>
-        </tbody>
-      </table>
+<div class="row justify-content-center mt-4 mb-5">
+    <div class="col-md-10">
+        <h2 class="fw-bold mb-4" style="color: var(--coffee-dark);"><i class="bi bi-cart3 me-2" style="color: var(--caramel);"></i> Tu carrito de reservas</h2>
+        
+        <div class="card border-0 shadow-sm" style="border-radius: 15px; overflow: hidden;">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle">
+                        <thead style="background: linear-gradient(135deg, var(--coffee-light) 0%, var(--coffee-dark) 100%); color: white;">
+                            <tr>
+                                <th class="py-3 px-4 border-0">Imagen</th>
+                                <th class="py-3 px-4 border-0">Producto</th>
+                                <th class="py-3 px-4 border-0">Cantidad</th>
+                                <th class="py-3 px-4 border-0">Precio</th>
+                                <th class="py-3 px-4 border-0">Subtotal</th>
+                                <th class="py-3 px-4 border-0 text-center">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in cart %}
+                                {% with product=item.product %}
+                                <tr style="transition: background-color 0.2s;">
+                                    <td class="px-4 py-3">
+                                        <a href="{{ product.get_absolute_url }}">
+                                            <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no_image.jpg' %}{% endif %}" class="rounded shadow-sm" alt="{{ product.name }}" style="max-width: 80px; border: 2px solid var(--border-color);">
+                                        </a>
+                                    </td>
+                                    <td class="px-4 py-3 fw-bold" style="color: var(--coffee-dark);">{{ product.name }}</td>
+                                    <td class="px-4 py-3">
+                                        <span class="badge rounded-pill" style="background-color: var(--border-color); color: var(--coffee-dark); font-size: 0.9rem;">{{ item.quantity }}</span>
+                                    </td>
+                                    <td class="px-4 py-3 text-muted">S/ {{ item.price|floatformat:2 }}</td>
+                                    <td class="px-4 py-3 fw-bold" style="color: var(--caramel);">S/ {{ item.total_price|floatformat:2 }}</td>
+                                    <td class="px-4 py-3 text-center">
+                                        <form action="{% url 'cart:cart_remove' product.id %}" method="post">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                                <i class="bi bi-trash"></i> Eliminar
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% endwith %}
+                            {% empty %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-5">
+                                        <i class="bi bi-cart-x fs-1 d-block mb-3" style="color: var(--border-color);"></i>
+                                        <span class="text-muted">Tu carrito está vacío. ¡Agrega unas deliciosas bebidas!</span>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        {% if cart|length > 0 %}
+                        <tfoot style="background-color: var(--cream-bg);">
+                            <tr>
+                                <td colspan="4" class="text-end align-middle py-4 fw-bold" style="color: var(--coffee-dark);">Total de Reserva:</td>
+                                <td class="py-4 fw-bold" style="color: var(--caramel); font-size: 1.25rem;">S/ {{ cart.get_total_price|floatformat:2 }}</td>
+                                <td></td>
+                            </tr>
+                        </tfoot>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a href="{% url 'tienda:product_list' %}" class="btn btn-secondary rounded-pill px-4">
+                <i class="bi bi-arrow-left me-1"></i> Continuar viendo
+            </a>
+            {% if cart|length > 0 %}
+                <a href="{% url 'orders:order_create' %}" class="btn btn-primary btn-lg rounded-pill px-5 shadow-sm">
+                    Confirmar Reserva <i class="bi bi-check-circle ms-1"></i>
+                </a>
+            {% endif %}
+        </div>
     </div>
-    <div class="text-right mt-3">
-      <a href="{% url 'tienda:product_list' %}" class="btn btn-light">Continuar comprando</a>
-      <!--<a href="#" class="btn btn-primary">Pagar</a>-->
-      <a href="{% url 'orders:order_create' %}" class="btn btn-primary">Pagar</a>
-    </div>
-  </div>
+</div>
 {% endblock %}

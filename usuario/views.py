@@ -28,8 +28,14 @@ def user_login(request):
     return render(request, 'account/login.html', {'form':form})
 
 @login_required
-def dashboard(request):
-    return render(request, 'account/dashboard.html', {'section':'dashboard'})
+def profile_view(request):
+    Profile.objects.get_or_create(user=request.user)
+    return render(request, 'account/profile.html', {'section':'profile'})
+
+@login_required
+def order_history(request):
+    orders = request.user.order_set.all().order_by('-created')
+    return render(request, 'account/history.html', {'section':'history', 'orders': orders})
 
 def register(request):
     if request.method == 'POST':
@@ -38,7 +44,12 @@ def register(request):
             new_user = user_form.save(commit=False)
             new_user.set_password(user_form.cleaned_data['password'])
             new_user.save()
-            Profile.objects.create(user=new_user)
+            Profile.objects.create(
+                user=new_user,
+                date_of_birth=user_form.cleaned_data.get('date_of_birth'),
+                phone=user_form.cleaned_data.get('phone'),
+                reference_address=user_form.cleaned_data.get('reference_address')
+            )
             return render(request, 'account/register_done.html', {'new_user': new_user})
     else:
         user_form = UserRegistrationForm()
@@ -46,6 +57,7 @@ def register(request):
 
 @login_required
 def edit(request):
+    Profile.objects.get_or_create(user=request.user)
     if request.method == 'POST':
         user_form = UserEditForm(instance=request.user,
                                  data=request.POST)

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Mis Reservas - Café Premium{% endblock %}
+
+{% block content %}
+<div class="row mt-4 mb-5">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold" style="color: var(--coffee-dark);"><i class="bi bi-cup-hot-fill me-2" style="color: var(--caramel);"></i> Historial de Reservas</h2>
+        </div>
+        
+        <div class="card border-0 shadow-sm" style="border-radius: 15px; overflow: hidden;">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0 align-middle">
+                    <thead style="background: linear-gradient(135deg, var(--coffee-light) 0%, var(--coffee-dark) 100%); color: white;">
+                        <tr>
+                            <th class="py-3 px-4 border-0">N° Reserva</th>
+                            <th class="py-3 px-4 border-0">Fecha</th>
+                            <th class="py-3 px-4 border-0">Estado</th>
+                            <th class="py-3 px-4 border-0 text-end">Total</th>
+                            <th class="py-3 px-4 border-0 text-center">Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr style="transition: background-color 0.2s;">
+                            <td class="px-4 py-3 fw-bold" style="color: var(--coffee-dark);">#{{ order.id }}</td>
+                            <td class="px-4 py-3" style="color: var(--text-muted);">{{ order.created|date:"d M Y, H:i" }}</td>
+                            <td class="px-4 py-3">
+                                {% if order.status == 'pendiente' %}
+                                    <span class="badge rounded-pill" style="background-color: var(--caramel);">Pendiente</span>
+                                {% elif order.status == 'listo' %}
+                                    <span class="badge rounded-pill bg-success">Listo para recoger</span>
+                                {% elif order.status == 'entregado' %}
+                                    <span class="badge rounded-pill bg-info text-dark">Entregado</span>
+                                {% else %}
+                                    <span class="badge rounded-pill bg-danger">Cancelado</span>
+                                {% endif %}
+                            </td>
+                            <td class="px-4 py-3 text-end fw-bold" style="color: var(--coffee-dark);">S/ {{ order.get_total_cost|floatformat:2 }}</td>
+                            <td class="px-4 py-3 text-center">
+                                <a href="{% url 'orders:order_detail' order.id %}" class="btn btn-sm btn-outline-secondary rounded-pill px-3">Ver Detalle</a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5 text-muted">
+                                <i class="bi bi-inbox fs-1 d-block mb-3" style="color: var(--border-color);"></i>
+                                Todavía no has realizado ninguna reserva en la cafetería.
+                                <br><br>
+                                <a href="{% url 'tienda:product_list' %}" class="btn btn-primary rounded-pill px-4 mt-2">Ir al Catálogo</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -3,12 +3,15 @@ from django.urls import path, include
 from django.conf import settings
 from django.conf.urls.static import static
 
+from django.views.generic import RedirectView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('cart/', include('cart.urls', namespace='cart')),
     path('orders/', include('orders.urls', namespace='orders')),
     path('account/', include('usuario.urls')),
-    path('', include('mitienda.urls', namespace='tienda')),
+    path('tienda/', include('mitienda.urls', namespace='tienda')),
+    path('', RedirectView.as_view(url='/account/login/', permanent=False)),
 ]
 
 if settings.DEBUG:

@@ -9,10 +9,21 @@ class LoginForm(forms.Form):
 class UserRegistrationForm(forms.ModelForm):
     password = forms.CharField(label='Contraseña', widget=forms.PasswordInput)
     password2 = forms.CharField(label='Repite la contraseña', widget=forms.PasswordInput)
+    
+    # Campos adicionales para el Profile
+    date_of_birth = forms.DateField(label='Fecha de nacimiento', widget=forms.DateInput(attrs={'type': 'date'}), required=False)
+    phone = forms.CharField(label='Teléfono', max_length=20, required=False)
+    reference_address = forms.CharField(label='Dirección de referencia', max_length=250, required=False)
 
     class Meta:
         model = User
-        fields = ['username', 'first_name', 'email']
+        fields = ['username', 'first_name', 'last_name', 'email']
+        labels = {
+            'username': 'Nombre de usuario',
+            'first_name': 'Nombres',
+            'last_name': 'Apellidos',
+            'email': 'Correo electrónico'
+        }
 
     def clean_password2(self):
         cd = self.cleaned_data
@@ -24,7 +35,22 @@ class UserEditForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email']
+        labels = {
+            'first_name': 'Nombres',
+            'last_name': 'Apellidos',
+            'email': 'Correo electrónico'
+        }
+
 class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Profile
-        fields = ['date_of_birth']
+        fields = ['date_of_birth', 'photo', 'phone', 'reference_address']
+        labels = {
+            'date_of_birth': 'Fecha de nacimiento',
+            'photo': 'Foto de perfil',
+            'phone': 'Teléfono',
+            'reference_address': 'Dirección de referencia'
+        }
+        widgets = {
+            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+        }

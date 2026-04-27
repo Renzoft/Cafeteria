@@ -1,12 +1,59 @@
 {% extends "base.html" %}
-{% block title %}Crear un nuevo usuario{% endblock %}
+{% block title %}Crear un nuevo usuario - Café Premium{% endblock %}
 
-{% block content%}
-    <h1>Crea una cuenta</h1>
-    <p>Registrate usando el siguiente formulario</p>
-    <form method="post">
-        {% csrf_token %}
-        {{ user_form.as_p }}
-        <button type="submit">Registrarse</button>
-    </form>
+{% block content %}
+<div class="row justify-content-center mt-5 mb-5">
+    <div class="col-md-6">
+        <div class="card border-0" style="border-radius: 15px; box-shadow: 0 10px 30px rgba(111, 78, 55, 0.15); overflow: hidden;">
+            <div class="card-header border-0 text-center text-white py-4" style="background: linear-gradient(135deg, var(--coffee-light) 0%, var(--coffee-dark) 100%);">
+                <i class="bi bi-person-plus-fill d-block mb-2" style="font-size: 2.5rem; color: #f1e3d3;"></i>
+                <h3 class="mb-0 fw-bold" style="color: #fcf8f2;">Crea tu cuenta</h3>
+            </div>
+            <div class="card-body p-4 p-md-5">
+                <p class="text-center mb-4" style="color: var(--text-muted); font-size: 0.95rem;">
+                    Únete a nosotros para empezar a reservar tus bebidas favoritas.
+                </p>
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% for field in user_form %}
+                    <div class="mb-4">
+                        <label class="form-label fw-bold" style="color: var(--coffee-dark);">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="text-danger small mt-1">
+                            {% for error in field.errors %}
+                                <i class="bi bi-exclamation-circle"></i> {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    <div class="d-grid mt-5">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-sm">Completar Registro</button>
+                    </div>
+                </form>
+            </div>
+            <div class="card-footer text-center py-3 bg-white border-0">
+                <p class="mb-0" style="color: var(--text-muted);">¿Ya tienes una cuenta? <a href="{% url 'login' %}" class="fw-bold text-decoration-none" style="color: var(--coffee-light);">Inicia sesión aquí</a>.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const inputs = document.querySelectorAll("input");
+        inputs.forEach(input => {
+            if (input.type !== "hidden" && input.type !== "submit" && input.type !== "checkbox") {
+                input.classList.add("form-control");
+                input.style.borderColor = "var(--border-color)";
+                input.style.backgroundColor = "white";
+                input.style.padding = "0.75rem 1rem";
+                input.style.borderRadius = "8px";
+            }
+        });
+    });
+</script>
 {% endblock %}

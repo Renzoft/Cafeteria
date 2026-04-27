@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}Mi Perfil - Café Premium{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5 mb-5">
+    <div class="col-md-6">
+        <div class="card border-0" style="border-radius: 15px; box-shadow: 0 10px 30px rgba(111, 78, 55, 0.15); overflow: hidden;">
+            <div class="card-header border-0 text-center py-4" style="background: linear-gradient(135deg, var(--coffee-light) 0%, var(--coffee-dark) 100%);">
+                {% if request.user.profile.photo %}
+                    <img src="{{ request.user.profile.photo.url }}" class="rounded-circle mb-3 border border-4 border-light shadow" width="120" height="120" alt="Foto de perfil" style="object-fit: cover;">
+                {% else %}
+                    <div class="bg-white rounded-circle d-inline-flex align-items-center justify-content-center mb-3 shadow" style="width: 120px; height: 120px; color: var(--coffee-light);">
+                        <i class="bi bi-person fs-1"></i>
+                    </div>
+                {% endif %}
+                <h3 class="fw-bold mb-1 text-white">
+                    {% if request.user.first_name or request.user.last_name %}
+                        {{ request.user.first_name }} {{ request.user.last_name }}
+                    {% else %}
+                        {{ request.user.username }}
+                    {% endif %}
+                </h3>
+                <p class="mb-0" style="color: #f1e3d3;">{{ request.user.email }}</p>
+            </div>
+            <div class="card-body p-4 p-md-5">
+                <div class="text-start p-4 rounded-3 mb-4 border" style="background-color: var(--cream-bg); border-color: var(--border-color) !important;">
+                    <p class="mb-3" style="color: var(--text-dark);">
+                        <strong><i class="bi bi-telephone me-2" style="color: var(--caramel);"></i> Teléfono:</strong><br>
+                        <span class="ms-4 text-muted">{{ request.user.profile.phone|default:"No especificado" }}</span>
+                    </p>
+                    <p class="mb-3" style="color: var(--text-dark);">
+                        <strong><i class="bi bi-calendar-event me-2" style="color: var(--caramel);"></i> Cumpleaños:</strong><br>
+                        <span class="ms-4 text-muted">{{ request.user.profile.date_of_birth|default:"No especificado" }}</span>
+                    </p>
+                    <p class="mb-0" style="color: var(--text-dark);">
+                        <strong><i class="bi bi-geo-alt me-2" style="color: var(--caramel);"></i> Dirección de referencia:</strong><br>
+                        <span class="ms-4 text-muted">{{ request.user.profile.reference_address|default:"No especificada" }}</span>
+                    </p>
+                </div>
+
+                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center mt-4">
+                    <a href="{% url 'edit' %}" class="btn btn-primary px-4 py-2 rounded-pill shadow-sm flex-sm-fill"><i class="bi bi-pencil me-1"></i> Editar Perfil</a>
+                    <a href="{% url 'password_change' %}" class="btn btn-secondary px-4 py-2 rounded-pill flex-sm-fill"><i class="bi bi-shield-lock me-1"></i> Cambiar Contraseña</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

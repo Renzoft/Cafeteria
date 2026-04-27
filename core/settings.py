@@ -23,6 +23,7 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'usuario.apps.UsuarioConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -45,12 +46,14 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+
 ROOT_URLCONF = 'core.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / 'templates'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -118,11 +121,12 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGIN_REDIRECT_URL = 'tienda:product_list'
+LOGIN_URL = 'login'
+LOGOUT_URL = 'logout'
+LOGOUT_REDIRECT_URL = 'login'
+
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
 CART_SESSION_ID = 'cart'
-
-LOGIN_URL = '/account/login/'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/account/login/'

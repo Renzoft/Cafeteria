@@ -1,19 +1,27 @@
-{% extends "tienda/base.html" %}
-{% block title %}
-  Gracias
-{% endblock %}
+{% extends "base.html" %}
+{% block title %}Reserva Completada - Café Premium{% endblock %}
+
 {% block content %}
-  <div class="container mt-5">
-    <div class="row">
-      <div class="col-md-6 offset-md-3">
-        <div class="card">
-          <div class="card-body">
-            <h1 class="card-title text-center">Gracias</h1>
-            <p class="card-text text-center">Tu orden se ha completado.</p>
-            <p class="card-text text-center">tu número de orden es <strong>{{ order.id }}</strong>.</p>
-          </div>
+<div class="row justify-content-center mt-5 mb-5">
+    <div class="col-md-6 text-center">
+        <div class="card border-0" style="border-radius: 15px; box-shadow: 0 10px 30px rgba(111, 78, 55, 0.15); overflow: hidden;">
+            <div class="card-header border-0 text-white py-4" style="background: linear-gradient(135deg, var(--caramel) 0%, var(--coffee-dark) 100%);">
+                <i class="bi bi-cup-hot-fill d-block mb-2" style="font-size: 3.5rem; color: #f1e3d3;"></i>
+                <h2 class="card-title mb-0 fw-bold">¡Reserva Completada!</h2>
+            </div>
+            <div class="card-body p-4 p-md-5" style="background-color: var(--cream-bg);">
+                <p class="card-text fs-5 mb-4" style="color: var(--coffee-dark);">Tu pedido ha sido procesado exitosamente y estamos preparándolo.</p>
+                <div class="bg-white p-4 rounded-3 mb-4 d-inline-block text-center shadow-sm" style="border: 2px dashed var(--border-color);">
+                    <p class="mb-1 text-muted text-uppercase small tracking-wide">Tu número de reserva es</p>
+                    <p class="mb-0 fs-1 fw-bold" style="color: var(--coffee-dark);">#{{ order.id }}</p>
+                </div>
+                <p class="mb-5" style="color: var(--text-muted);">Por favor, acércate al local a recoger tu pedido mostrando este número.</p>
+                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                    <a href="{% url 'orders:order_detail' order.id %}" class="btn btn-primary btn-lg rounded-pill px-4 shadow-sm"><i class="bi bi-receipt me-1"></i> Ver detalle</a>
+                    <a href="{% url 'tienda:product_list' %}" class="btn btn-secondary btn-lg rounded-pill px-4"><i class="bi bi-grid me-1"></i> Volver al menú</a>
+                </div>
+            </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>
 {% endblock %}
