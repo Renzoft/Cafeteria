@@ -1,45 +1,62 @@
 {% extends "base.html" %}
 
-{% block title %}Iniciar sesión{% endblock %}
+{% block title %}Iniciar sesión - Rico Destino{% endblock %}
 
 {% block content %}
-<div class="container mt-5">
-  <div class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="card">
-        <h5 class="card-header">Iniciar sesión</h5>
-        <div class="card-body">
-          {% if form.errors %}
-            <div class="alert alert-danger" role="alert">
-              Tu usuario o contraseña están incorrectos. Intenta de nuevo por favor.
-            </div>
-          {% else %}
-            <p class="text-muted">Por favor, llena el formulario para iniciar sesión:</p>
-          {% endif %}
-          <form action="{% url 'login' %}" method="post">
-              {% csrf_token %}
-              <div class="form-group mb-3">
-                <label for="{{ form.username.id_for_label }}">Usuario</label>
-                {{ form.username }}
-              </div>
-              <div class="form-group mb-3">
-                <label for="{{ form.password.id_for_label }}">Contraseña</label>
-                {{ form.password }}
-              </div>
-              <input type="hidden" name="next" value="{{ next }}" />
-              <button type="submit" class="btn btn-primary">Iniciar sesión</button>
-          </form>
-          <p>
-            <a href="{% url 'password_reset' %}">
-              ¿Olvidaste tu contraseña?
-            </a>
-          </p>
-          <p>
-            <a href="{% url 'register' %}">
-              Registrate aquí
-            </a>
-          </p>
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 70vh;">
+  <div class="card shadow-lg border-0" style="width: 100%; max-width: 450px; border-radius: 15px; overflow: hidden;">
+    <div class="card-header text-center text-white p-4" style="background: linear-gradient(135deg, var(--coffee-light) 0%, var(--coffee-dark) 100%);">
+      <i class="bi bi-cup-hot-fill" style="font-size: 3rem; color: #f8c146;"></i>
+      <h3 class="mb-0 mt-2 fw-bold" style="font-family: 'Georgia', serif;">Bienvenido</h3>
+      <p class="mb-0" style="color: #e0d5c1;">Inicia sesión en tu cuenta</p>
+    </div>
+    
+    <div class="card-body p-4 p-md-5" style="background-color: var(--cream-card);">
+      {% if form.errors %}
+        <div class="alert alert-danger d-flex align-items-center mb-4" role="alert" style="border-radius: 10px;">
+          <i class="bi bi-exclamation-triangle-fill flex-shrink-0 me-2"></i>
+          <div>
+            Tu usuario o contraseña son incorrectos. Intenta de nuevo por favor.
+          </div>
         </div>
+      {% endif %}
+      
+      <form action="{% url 'login' %}" method="post">
+          {% csrf_token %}
+          
+          <div class="form-floating mb-3">
+            <input type="text" name="username" class="form-control" id="id_username" placeholder="Usuario" required style="border-radius: 10px; border-color: var(--border-color);" {% if form.username.value %}value="{{ form.username.value }}"{% endif %}>
+            <label for="id_username" style="color: var(--text-muted);">Usuario</label>
+          </div>
+          
+          <div class="form-floating mb-4">
+            <input type="password" name="password" class="form-control" id="id_password" placeholder="Contraseña" required style="border-radius: 10px; border-color: var(--border-color);">
+            <label for="id_password" style="color: var(--text-muted);">Contraseña</label>
+          </div>
+          
+          <input type="hidden" name="next" value="{{ next }}" />
+          
+          <div class="d-grid gap-2 mt-4">
+            <button type="submit" class="btn btn-primary btn-lg fw-bold" style="border-radius: 10px;">
+              <i class="bi bi-box-arrow-in-right me-2"></i> Ingresar
+            </button>
+          </div>
+      </form>
+      
+      <hr class="my-4" style="border-color: var(--border-color);">
+      
+      <div class="text-center">
+        <p class="mb-2">
+          <a href="{% url 'password_reset' %}" class="text-decoration-none" style="color: var(--caramel); font-weight: 500;">
+            <i class="bi bi-key"></i> ¿Olvidaste tu contraseña?
+          </a>
+        </p>
+        <p class="mb-0 text-muted">
+          ¿No tienes cuenta? 
+          <a href="{% url 'register' %}" class="text-decoration-none fw-bold" style="color: var(--coffee-light);">
+            Regístrate aquí
+          </a>
+        </p>
       </div>
     </div>
   </div>

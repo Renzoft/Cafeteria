@@ -8,3 +8,6 @@ ENV/
 # --- Variables de Entorno (SEGURIDAD) ---
 # Esto evita que tu SECRET_KEY y credenciales se suban a GitHub
 .env
+
+# --- Base de datos local ---
+db.sqlite3

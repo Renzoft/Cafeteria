@@ -1,4 +1,4 @@
-# Café Premium - Sistema de Reservas (Django)
+# Rico Destino - Sistema de Reservas (Django)
 
 Este es un proyecto monolítico desarrollado en Django, diseñado como un sistema moderno y estilizado para la gestión de reservas en una cafetería premium. Permite a los clientes registrados explorar un menú interactivo, agregar bebidas o alimentos a su carrito, y confirmar su reserva para recogerla y pagarla directamente en el local.
 
