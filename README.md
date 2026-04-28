@@ -84,10 +84,6 @@ python manage.py runserver
 
 ¡Listo! El servidor estará corriendo localmente y podrás acceder desde tu navegador.
 
-## Enlaces Rápidos
+## Enlace Rápido
 
 *   **Página Principal (Redirige al Login)**: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)
-*   **Catálogo de la Cafetería**: [http://127.0.0.1:8000/tienda/](http://127.0.0.1:8000/tienda/)
-*   **Panel de Administración (Jazzmin)**: [http://127.0.0.1:8000/admin/](http://127.0.0.1:8000/admin/)
-*   **Mi Perfil**: [http://127.0.0.1:8000/account/profile/](http://127.0.0.1:8000/account/profile/)
-*   **Mis Reservas**: [http://127.0.0.1:8000/account/history/](http://127.0.0.1:8000/account/history/)
