@@ -30,6 +30,16 @@ class UserProfileForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        if 'is_active' in self.fields:
+            self.fields['is_active'].label = "Cuenta Activa"
+            self.fields['is_active'].help_text = "Desmarque esto para bloquear el acceso al usuario sin eliminar su cuenta."
+        if 'is_staff' in self.fields:
+            self.fields['is_staff'].label = "Acceso al Panel (Staff)"
+            self.fields['is_staff'].help_text = "Permite al usuario entrar a este panel de administración."
+        if 'is_superuser' in self.fields:
+            self.fields['is_superuser'].label = "Super Administrador"
+            self.fields['is_superuser'].help_text = "Otorga todos los permisos del sistema sin restricciones."
+
         if self.instance and self.instance.pk:
             try:
                 profile = self.instance.profile
@@ -43,24 +53,49 @@ class UserProfileForm(forms.ModelForm):
 class CustomUserAdmin(BaseUserAdmin):
     form = UserProfileForm
     add_form = AdminUserCreationForm
+    list_display = ('username', 'email', 'first_name', 'last_name', 'is_staff', 'is_active')
+    list_filter = ('is_staff', 'is_superuser', 'is_active')
+    search_fields = []
+    ordering = ('username',)
+
+    readonly_fields = ('last_login', 'date_joined')
+
+    class Media:
+        js = ('admin/js/slug_sync.js',)
+        css = {
+            'all': ('admin/css/admin_styles.css',)
+        }
     
     fieldsets = (
-        ('General', {'fields': ('password',)}),
-        ('Información personal', {
+        ('Credenciales de Acceso', {
+            'fields': ('username', 'password'),
+            'classes': ('wide',),
+        }),
+        ('Información Personal', {
             'fields': (
-                'username', 'first_name', 'last_name', 'email',
-                'date_of_birth', 'phone', 'reference_address', 'photo'
-            )
+                ('first_name', 'last_name'),
+                ('email', 'phone'),
+                ('date_of_birth', 'reference_address'),
+                'photo',
+            ),
         }),
-        ('Permisos', {
-            'fields': ('is_active', 'is_staff', 'is_superuser', 'groups', 'user_permissions'),
-            'classes': ('collapse',)
+        ('Estado y Roles', {
+            'fields': (
+                'is_active', 
+                'is_staff', 
+                'is_superuser'
+            ),
+            'description': 'Configure si este usuario tendrá acceso administrativo al sistema o será un cliente regular.'
         }),
-        ('Fechas importantes', {
-            'fields': ('last_login', 'date_joined'),
-            'classes': ('collapse',)
+        ('Fechas de Registro', {
+            'fields': (
+                'last_login', 
+                'date_joined'
+            ),
+            'description': 'Información sobre la actividad del usuario en el sistema.'
         }),
     )
+    filter_horizontal = ('groups', 'user_permissions')
 
     add_fieldsets = (
         ('Crear nuevo usuario', {
@@ -94,8 +129,3 @@ class CustomUserAdmin(BaseUserAdmin):
 
 admin.site.unregister(User)
 admin.site.register(User, CustomUserAdmin)
-
-@admin.register(Profile)
-class ProfileAdmin(admin.ModelAdmin):
-    list_display=['user', 'date_of_birth']
-    raw_id_fields=['user']

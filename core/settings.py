@@ -108,7 +108,12 @@ TIME_ZONE = 'America/Lima'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
+
+# Formato de fecha y hora en 24h
+DATETIME_FORMAT = 'd/m/Y H:i:s'
+SHORT_DATETIME_FORMAT = 'd/m/Y H:i:s'
+USE_L10N = False # Desactivamos L10N para usar nuestros formatos personalizados
 
 
 # Static files (CSS, JavaScript, Images)

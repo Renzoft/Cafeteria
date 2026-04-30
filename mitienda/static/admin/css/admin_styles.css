@@ -1,0 +1,229 @@
+/* Limpiar la visualización de campos de imagen/archivo en el admin */
+.file-upload {
+    background: #fdfaf6;
+    padding: 20px;
+    border-radius: 12px;
+    border: 1px dashed var(--border-color, #d9caba);
+    display: block;
+    margin-bottom: 10px;
+    position: relative;
+    max-width: 500px;
+}
+
+/* Ocultar el texto feo por defecto */
+.file-upload {
+    font-size: 0 !important;
+    color: transparent !important;
+}
+
+/* Estilo para el link de la imagen actual */
+.file-upload a {
+    font-size: 13px !important;
+    color: #6f4e37 !important;
+    text-decoration: none !important;
+    background: #fff;
+    padding: 6px 15px;
+    border-radius: 30px;
+    border: 1px solid #eee;
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    transition: all 0.2s ease;
+}
+
+.file-upload a:hover {
+    background: #6f4e37;
+    color: #fff !important;
+}
+
+.file-upload a:before {
+    content: "\f15b"; /* icono de archivo en FontAwesome */
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    margin-right: 8px;
+}
+
+/* Estilo para el input de archivo */
+.file-upload input[type="file"] {
+    font-size: 14px !important;
+    color: #495057 !important;
+    display: block;
+    width: 100%;
+    padding: 10px;
+    background: #fff;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+}
+
+/* Estilo para el checkbox de 'Eliminar' */
+.file-upload label {
+    font-size: 13px !important;
+    color: #dc3545 !important;
+    font-weight: 500;
+    margin-left: 10px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+}
+
+.file-upload input[type="checkbox"] {
+    margin-right: 5px;
+    accent-color: #dc3545;
+}
+
+/* Estilo para la vista previa de imagen */
+.admin-image-preview {
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(111, 78, 55, 0.15);
+    border: 3px solid #fff;
+    margin-bottom: 20px;
+    display: block;
+    max-width: 250px;
+    height: auto;
+    transition: transform 0.3s ease;
+}
+
+.admin-image-preview:hover {
+    transform: scale(1.02);
+}
+
+/* Estilos para los filtros del admin */
+.filter-horizontal select, 
+.changelist-filter select {
+    border: 1px solid #ced4da !important;
+    border-radius: 6px !important;
+    padding: 5px 10px !important;
+    background-color: #fff !important;
+    transition: all 0.3s ease !important;
+    cursor: pointer !important;
+}
+
+/* Resaltar filtro activo */
+.filter-active {
+    border: 2px solid #8b5a2b !important;
+    background-color: #fff9f0 !important;
+    font-weight: 600 !important;
+    color: #4a3324 !important;
+    box-shadow: 0 0 8px rgba(139, 90, 43, 0.2) !important;
+}
+
+.filter-horizontal select:focus {
+    border-color: #8b5a2b !important;
+    outline: none !important;
+}
+
+/* Estilo para el botón Buscar en los filtros */
+.filter-horizontal button[type="submit"] {
+    background-color: #8b5a2b !important;
+    border-color: #8b5a2b !important;
+    border-radius: 6px !important;
+    padding: 6px 20px !important;
+    font-weight: 600 !important;
+}
+
+/* Mejora de Fieldsets en el formulario de cambio */
+fieldset {
+    border: none !important;
+    background: #fff;
+    border-radius: 15px !important;
+    padding: 25px !important;
+    margin-bottom: 30px !important;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05) !important;
+    border-left: 5px solid #6f4e37 !important;
+}
+
+fieldset h2 {
+    background: none !important;
+    color: #6f4e37 !important;
+    font-size: 1.1rem !important;
+    font-weight: 700 !important;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 20px !important;
+    border-bottom: 1px solid #eee !important;
+    padding-bottom: 10px !important;
+}
+
+/* Mejorar el selector de permisos (filter_horizontal) */
+.selector {
+    width: 100% !important;
+    display: flex;
+    align-items: center;
+}
+
+.selector .selector-available, 
+.selector .selector-chosen {
+    flex: 1;
+    border: 1px solid #e9ecef !important;
+    border-radius: 10px !important;
+    overflow: hidden;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.selector h2 {
+    background: #f8f9fa !important;
+    color: #495057 !important;
+    padding: 8px 12px !important;
+    font-size: 13px !important;
+    border-left: none !important;
+    margin-bottom: 0 !important;
+}
+
+.selector select {
+    border: none !important;
+    height: 200px !important;
+    font-size: 13px;
+}
+
+.selector-chooser {
+    padding: 0 10px !important;
+    list-style: none;
+}
+
+.selector-add, .selector-remove {
+    display: block;
+    width: 35px;
+    height: 35px;
+    background-color: #6f4e37 !important;
+    background-image: none !important;
+    border-radius: 50% !important;
+    color: transparent !important; /* Ocultar texto original */
+    font-size: 0 !important;
+    text-align: center;
+    line-height: 35px;
+    margin: 8px auto !important;
+    opacity: 0.9;
+    transition: all 0.2s ease;
+    border: none !important;
+    cursor: pointer;
+    position: relative;
+}
+
+.selector-add:hover, .selector-remove:hover {
+    opacity: 1;
+    background-color: #4a3324 !important;
+    transform: scale(1.1);
+}
+
+.selector-add:before, .selector-remove:before {
+    font-family: "Font Awesome 5 Free";
+    font-weight: 900;
+    font-size: 14px;
+    color: #fff !important;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.selector-add:before { content: "\f061"; } /* Arrow right */
+.selector-remove:before { content: "\f060"; } /* Arrow left */
+
+.selector .selector-filter input {
+    border: 1px solid #ced4da !important;
+    border-radius: 20px !important;
+    padding: 5px 15px !important;
+    margin: 5px !important;
+    width: calc(100% - 20px) !important;
+}
