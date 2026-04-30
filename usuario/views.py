@@ -100,3 +100,8 @@ def check_email_exists(request):
     email = request.GET.get('email', '')
     exists = User.objects.filter(email=email).exists() if email else False
     return JsonResponse({'exists': exists})
+
+def check_username_exists(request):
+    username = request.GET.get('username', '')
+    exists = User.objects.filter(username=username).exists() if username else False
+    return JsonResponse({'exists': exists})

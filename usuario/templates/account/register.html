@@ -54,6 +54,115 @@
                 input.style.borderRadius = "8px";
             }
         });
+
+        // Validaciones en tiempo real
+        const usernameInput = document.getElementById("id_username");
+        const emailInput = document.getElementById("id_email");
+        const passwordInput = document.getElementById("id_password");
+        const password2Input = document.getElementById("id_password2");
+
+        // Función auxiliar para crear y posicionar el mensaje de error/éxito
+        function getOrCreateFeedbackMessage(inputElement) {
+            let feedback = inputElement.parentNode.querySelector(".realtime-feedback");
+            if (!feedback) {
+                feedback = document.createElement("div");
+                feedback.className = "realtime-feedback small mt-1 fw-bold";
+                inputElement.parentNode.appendChild(feedback);
+            }
+            return feedback;
+        }
+
+        // Validación de nombre de usuario (asíncrono)
+        if (usernameInput) {
+            usernameInput.addEventListener("input", async function() {
+                const feedback = getOrCreateFeedbackMessage(usernameInput);
+                const val = usernameInput.value.trim();
+                
+                if (val === "") {
+                    feedback.textContent = "";
+                    usernameInput.style.borderColor = "var(--border-color)";
+                } else if (val.length < 3) {
+                    feedback.textContent = "✗ El usuario debe tener al menos 3 caracteres";
+                    feedback.className = "realtime-feedback small mt-1 fw-bold text-danger";
+                    usernameInput.style.borderColor = "#dc3545";
+                } else {
+                    try {
+                        const response = await fetch(`/account/check-username/?username=${encodeURIComponent(val)}`);
+                        const data = await response.json();
+                        if (data.exists) {
+                            feedback.textContent = "✗ Este nombre de usuario ya está en uso";
+                            feedback.className = "realtime-feedback small mt-1 fw-bold text-danger";
+                            usernameInput.style.borderColor = "#dc3545";
+                        } else {
+                            feedback.textContent = "✓ Nombre de usuario disponible";
+                            feedback.className = "realtime-feedback small mt-1 fw-bold text-success";
+                            usernameInput.style.borderColor = "#198754";
+                        }
+                    } catch (e) {
+                        console.error(e);
+                    }
+                }
+            });
+        }
+
+        // Validación de correo electrónico (asíncrono)
+        if (emailInput) {
+            emailInput.addEventListener("input", async function() {
+                const feedback = getOrCreateFeedbackMessage(emailInput);
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                const val = emailInput.value.trim();
+                
+                if (val === "") {
+                    feedback.textContent = "";
+                    emailInput.style.borderColor = "var(--border-color)";
+                } else if (emailRegex.test(val)) {
+                    try {
+                        const response = await fetch(`/account/check-email/?email=${encodeURIComponent(val)}`);
+                        const data = await response.json();
+                        if (data.exists) {
+                            feedback.textContent = "✗ Este correo ya está registrado por otro usuario";
+                            feedback.className = "realtime-feedback small mt-1 fw-bold text-danger";
+                            emailInput.style.borderColor = "#dc3545";
+                        } else {
+                            feedback.textContent = "✓ Correo válido y disponible";
+                            feedback.className = "realtime-feedback small mt-1 fw-bold text-success";
+                            emailInput.style.borderColor = "#198754";
+                        }
+                    } catch (e) {
+                        console.error(e);
+                    }
+                } else {
+                    feedback.textContent = "✗ Correo inválido (ejemplo: usuario@dominio.com)";
+                    feedback.className = "realtime-feedback small mt-1 fw-bold text-danger";
+                    emailInput.style.borderColor = "#dc3545";
+                }
+            });
+        }
+
+        // Validación de coincidencia de contraseñas
+        function checkPasswords() {
+            if (!passwordInput || !password2Input) return;
+            const feedback = getOrCreateFeedbackMessage(password2Input);
+            
+            if (password2Input.value === "") {
+                feedback.textContent = "";
+                password2Input.style.borderColor = "var(--border-color)";
+                return;
+            }
+
+            if (passwordInput.value === password2Input.value) {
+                feedback.textContent = "✓ Las contraseñas coinciden";
+                feedback.className = "realtime-feedback small mt-1 fw-bold text-success";
+                password2Input.style.borderColor = "#198754";
+            } else {
+                feedback.textContent = "✗ Las contraseñas no coinciden";
+                feedback.className = "realtime-feedback small mt-1 fw-bold text-danger";
+                password2Input.style.borderColor = "#dc3545";
+            }
+        }
+
+        if (passwordInput) passwordInput.addEventListener("input", checkPasswords);
+        if (password2Input) password2Input.addEventListener("input", checkPasswords);
     });
 </script>
 {% endblock %}

@@ -1,4 +1,4 @@
-# Rico Destino - Sistema de Reservas (Django)
+# Rico Destino - Sistema de Reservas
 
 Este es un proyecto monolítico desarrollado en Django, diseñado como un sistema moderno y estilizado para la gestión de reservas en una cafetería premium. Permite a los clientes registrados explorar un menú interactivo, agregar bebidas o alimentos a su carrito, y confirmar su reserva para recogerla y pagarla directamente en el local.
 
@@ -36,8 +36,6 @@ Es indispensable utilizar un entorno virtual para no afectar otras instalaciones
 ```bash
 python -m venv my_env
 source my_env/Scripts/activate
-```
-*(Sabrás que funcionó porque aparecerá `(my_env)` al principio de la línea en tu terminal).*
 
 ### 3. Instalar las dependencias
 
@@ -81,9 +79,3 @@ Inicia el servidor de desarrollo de Django:
 ```bash
 python manage.py runserver
 ```
-
-¡Listo! El servidor estará corriendo localmente y podrás acceder desde tu navegador.
-
-## Enlace Rápido
-
-*   **Página Principal (Redirige al Login)**: [http://127.0.0.1:8000/](http://127.0.0.1:8000/)

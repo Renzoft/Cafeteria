@@ -1,22 +1,74 @@
 {% extends "base.html" %}
-{% block title %}Editar tu perfil{% endblock %}
+{% block title %}Editar tu perfil - Rico Destino{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
+<div class="row justify-content-center mt-5 mb-5">
     <div class="col-md-6">
-        <div class="card shadow-sm">
-            <div class="card-header bg-primary text-white">
-                <h4 class="mb-0">Edita tu perfil</h4>
+        <div class="card border-0" style="border-radius: 15px; box-shadow: 0 10px 30px rgba(111, 78, 55, 0.15); overflow: hidden;">
+            <div class="card-header border-0 text-center text-white py-4" style="background: linear-gradient(135deg, var(--coffee-light) 0%, var(--coffee-dark) 100%);">
+                <i class="bi bi-person-lines-fill d-block mb-2" style="font-size: 2.5rem; color: #f1e3d3;"></i>
+                <h3 class="mb-0 fw-bold" style="color: #fcf8f2;">Edita tu perfil</h3>
             </div>
-            <div class="card-body">
+            <div class="card-body p-4 p-md-5">
                 <form method="post" enctype="multipart/form-data">
                     {% csrf_token %}
-                    {{ user_form.as_p }}
-                    {{ profile_form.as_p }}
-                    <button type="submit" class="btn btn-primary w-100">Guardar cambios</button>
+                    
+                    <h5 class="mb-3" style="color: var(--coffee-dark); border-bottom: 2px solid var(--coffee-light); padding-bottom: 5px;">Datos de usuario</h5>
+                    {% for field in user_form %}
+                    <div class="mb-4">
+                        <label class="form-label fw-bold" style="color: var(--coffee-dark);">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="text-danger small mt-1">
+                            {% for error in field.errors %}
+                                <i class="bi bi-exclamation-circle"></i> {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    <h5 class="mb-3 mt-5" style="color: var(--coffee-dark); border-bottom: 2px solid var(--coffee-light); padding-bottom: 5px;">Datos personales</h5>
+                    {% for field in profile_form %}
+                    <div class="mb-4">
+                        <label class="form-label fw-bold" style="color: var(--coffee-dark);">{{ field.label }}</label>
+                        {{ field }}
+                        {% if field.errors %}
+                        <div class="text-danger small mt-1">
+                            {% for error in field.errors %}
+                                <i class="bi bi-exclamation-circle"></i> {{ error }}
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+
+                    <div class="d-grid mt-5">
+                        <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-sm" style="background-color: #8b5e3c; border-color: #8b5e3c; transition: background-color 0.3s ease;">
+                            Guardar cambios
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const inputs = document.querySelectorAll("input, select, textarea");
+        inputs.forEach(input => {
+            if (input.type !== "hidden" && input.type !== "submit" && input.type !== "checkbox" && input.type !== "file") {
+                input.classList.add("form-control");
+                input.style.borderColor = "var(--border-color)";
+                input.style.backgroundColor = "white";
+                input.style.padding = "0.75rem 1rem";
+                input.style.borderRadius = "8px";
+            }
+            if (input.type === "file") {
+                input.classList.add("form-control");
+            }
+        });
+    });
+</script>
 {% endblock %}

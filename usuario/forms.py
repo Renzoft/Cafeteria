@@ -6,23 +6,26 @@ class LoginForm(forms.Form):
     username = forms.CharField()
     password = forms.CharField(widget=forms.PasswordInput)
 
+from django.core.validators import validate_email
+from django.core.exceptions import ValidationError
+
 class UserRegistrationForm(forms.ModelForm):
-    password = forms.CharField(label='Contraseña', widget=forms.PasswordInput)
-    password2 = forms.CharField(label='Repite la contraseña', widget=forms.PasswordInput)
+    first_name = forms.CharField(label='Nombres', required=True)
+    last_name = forms.CharField(label='Apellidos', required=True)
+    email = forms.EmailField(label='Correo electrónico', required=True, validators=[validate_email])
+    password = forms.CharField(label='Contraseña', widget=forms.PasswordInput, required=True)
+    password2 = forms.CharField(label='Repite la contraseña', widget=forms.PasswordInput, required=True)
     
     # Campos adicionales para el Profile
-    date_of_birth = forms.DateField(label='Fecha de nacimiento', widget=forms.DateInput(attrs={'type': 'date'}), required=False)
-    phone = forms.CharField(label='Teléfono', max_length=20, required=False)
-    reference_address = forms.CharField(label='Dirección de referencia', max_length=250, required=False)
+    date_of_birth = forms.DateField(label='Fecha de nacimiento', widget=forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}), required=True)
+    phone = forms.CharField(label='Teléfono', max_length=20, required=True)
+    reference_address = forms.CharField(label='Dirección de referencia', max_length=250, required=True)
 
     class Meta:
         model = User
         fields = ['username', 'first_name', 'last_name', 'email']
         labels = {
             'username': 'Nombre de usuario',
-            'first_name': 'Nombres',
-            'last_name': 'Apellidos',
-            'email': 'Correo electrónico'
         }
 
     def clean_password2(self):
@@ -34,8 +37,9 @@ class UserRegistrationForm(forms.ModelForm):
 class UserEditForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email']
+        fields = ['username', 'first_name', 'last_name', 'email']
         labels = {
+            'username': 'Nombre de usuario',
             'first_name': 'Nombres',
             'last_name': 'Apellidos',
             'email': 'Correo electrónico'
@@ -52,7 +56,7 @@ class ProfileEditForm(forms.ModelForm):
             'reference_address': 'Dirección de referencia'
         }
         widgets = {
-            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
+            'date_of_birth': forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'}),
         }
 
 class DirectPasswordResetForm(forms.Form):
