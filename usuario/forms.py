@@ -54,3 +54,17 @@ class ProfileEditForm(forms.ModelForm):
         widgets = {
             'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
         }
+
+class DirectPasswordResetForm(forms.Form):
+    email = forms.EmailField(label='Correo electrónico')
+    password = forms.CharField(label='Nueva contraseña', widget=forms.PasswordInput)
+    password_confirm = forms.CharField(label='Repite la nueva contraseña', widget=forms.PasswordInput)
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get('password')
+        password_confirm = cleaned_data.get('password_confirm')
+
+        if password and password_confirm and password != password_confirm:
+            raise forms.ValidationError("Las contraseñas no coinciden.")
+        return cleaned_data

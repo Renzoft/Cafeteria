@@ -11,3 +11,6 @@ ENV/
 
 # --- Base de datos local ---
 db.sqlite3
+
+**/__pycache__/
+*.pyc

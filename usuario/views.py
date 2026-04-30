@@ -1,10 +1,11 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth  import authenticate, login
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.contrib.auth.models import User
 
-from .forms import UserRegistrationForm, UserEditForm, LoginForm, ProfileEditForm
+from .forms import UserRegistrationForm, UserEditForm, LoginForm, ProfileEditForm, DirectPasswordResetForm
 from .models import Profile
 
 def user_login(request):
@@ -76,3 +77,26 @@ def edit(request):
         'user_form':user_form,
         'profile_form':profile_form
     })
+
+def direct_password_reset(request):
+    if request.method == 'POST':
+        form = DirectPasswordResetForm(request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            new_password = form.cleaned_data['password']
+            try:
+                user = User.objects.get(email=email)
+                user.set_password(new_password)
+                user.save()
+                messages.success(request, 'Tu contraseña ha sido restablecida con éxito. Ahora puedes iniciar sesión.')
+                return redirect('login')
+            except User.DoesNotExist:
+                messages.error(request, 'No existe ningún usuario con este correo electrónico.')
+    else:
+        form = DirectPasswordResetForm()
+    return render(request, 'account/password_reset_direct.html', {'form': form})
+
+def check_email_exists(request):
+    email = request.GET.get('email', '')
+    exists = User.objects.filter(email=email).exists() if email else False
+    return JsonResponse({'exists': exists})
