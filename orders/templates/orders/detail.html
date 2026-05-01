@@ -8,7 +8,7 @@
         <div class="card border-0 shadow-sm mb-4" style="border-radius: 15px; overflow: hidden;">
             <div class="card-header border-0 text-white py-3 d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, var(--coffee-light) 0%, var(--coffee-dark) 100%);">
                 <h5 class="mb-0 fw-bold">Ticket #{{ order.id }}</h5>
-                <span class="badge rounded-pill px-3 py-2" style="{% if order.status == 'pendiente' %}background-color: var(--caramel); color: white;{% elif order.status == 'listo' %}background-color: #198754; color: white;{% elif order.status == 'entregado' %}background-color: #0dcaf0; color: #000;{% else %}background-color: #dc3545; color: white;{% endif %}">
+                <span class="badge rounded-pill px-3 py-2" style="{% if order.status == 'Pendiente' %}background-color: var(--caramel); color: white;{% elif order.status == 'Listo' %}background-color: #198754; color: white;{% elif order.status == 'Entregado' %}background-color: #0dcaf0; color: #000;{% else %}background-color: #dc3545; color: white;{% endif %}">
                     {{ order.get_status_display }}
                 </span>
             </div>

@@ -34,8 +34,8 @@ class Product(models.Model):
                                 decimal_places=2, verbose_name='precio')
     stock = models.PositiveIntegerField(default=0, verbose_name='stock')
     available = models.BooleanField(default=True, verbose_name='disponible')
-    created = models.DateTimeField(auto_now=True, verbose_name='creado')
-    updated = models.DateTimeField(auto_now_add=True, verbose_name='actualizado')
+    created = models.DateTimeField(auto_now=True, verbose_name='actualizado')
+    updated = models.DateTimeField(auto_now_add=True, verbose_name='creado')
 
     class Meta:
         verbose_name = 'Producto'

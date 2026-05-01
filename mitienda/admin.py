@@ -6,11 +6,29 @@ from .models import Category, Product
 # Eliminar el apartado de Grupos
 admin.site.unregister(Group)
 
+class ProductInline(admin.TabularInline):
+    model = Product
+    extra = 0
+    fields = ['name', 'slug', 'price', 'stock', 'available']
+    readonly_fields = ['name', 'slug', 'price', 'stock', 'available']
+    show_change_link = False
+    can_delete = False
+
+    def has_add_permission(self, request, obj=None):
+        return False
+
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'slug']
     list_filter = ['name']
     readonly_fields = []
+    inlines = [ProductInline]
+
+    fieldsets = (
+        ('Información General', {
+            'fields': ('name', 'slug')
+        }),
+    )
 
     def changeform_view(self, request, object_id=None, form_url='', extra_context=None):
         extra_context = extra_context or {}
@@ -21,6 +39,9 @@ class CategoryAdmin(admin.ModelAdmin):
 
     class Media:
         js = ('admin/js/slug_sync.js',)
+        css = {
+            'all': ('admin/css/admin_styles.css',)
+        }
 
 @admin.register(Product)
 # Custom Product Admin
