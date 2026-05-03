@@ -11,8 +11,22 @@ El sistema se distingue por una interfaz de usuario cálida y armónica, inspira
 *   **Carrito Persistente**: Sistema de carrito de compras integrado directamente a la base de datos que se vincula al iniciar sesión.
 *   **Perfiles de Usuario Completos**: Registro y edición de perfil con foto, teléfono, fecha de nacimiento y dirección.
 *   **Historial de Reservas**: Vista dedicada para que los usuarios puedan dar seguimiento al estado de sus pedidos (Pendiente, Listo, Entregado, Cancelado).
-*   **Panel de Administración Moderno**: Impulsado por `django-jazzmin`, proporciona una interfaz de administración altamente intuitiva para gestionar productos, stock y usuarios.
-*   **Seguridad y Sesiones**: Redirecciones protegidas y cierre de sesión estricto vinculado a las pestañas del navegador para maximizar la seguridad en equipos compartidos.
+*   **Sesiones Independientes (Multilogin)**: Middleware personalizado que permite mantener sesiones abiertas simultáneamente como administrador y como usuario en el mismo navegador, utilizando cookies separadas (`admin_sessionid` y `sessionid`).
+
+## Sistema de Notificaciones en Tiempo Real (Admin)
+
+El panel de administración cuenta con un robusto sistema de monitoreo en tiempo vivo:
+
+*   **Monitor de Pedidos**: Panel dedicado accesible desde `/admin/orders/order/monitor/` que muestra las reservas entrantes sin necesidad de recargar la página.
+*   **Alertas Visuales y Sonoras**: Notificaciones tipo *Toast* personalizadas y alertas sonoras al detectar nuevos pedidos.
+*   **Sidebar Dinámico**: Resaltado visual (pulsación ámbar) y badges en la barra lateral del admin para indicar la cantidad de pedidos pendientes de revisión.
+*   **API Integrada**: Sistema de polling optimizado que consulta el estado de las órdenes directamente desde el ecosistema del admin para mayor seguridad.
+
+## Administración y UI/UX
+
+*   **Panel Jazzmin Optimizado**: Interfaz administrativa moderna con estilos personalizados en `admin_styles.css`.
+*   **Simplificación de Formularios**: Eliminación de botones redundantes en la edición de pedidos para un flujo de trabajo más directo (manteniendo solo Guardar, Eliminar e Histórico).
+*   **Gestión de Stock**: Lógica automática para restaurar el stock de productos al cancelar o eliminar reservas.
 
 ## Requisitos Previos
 
@@ -27,7 +41,7 @@ Sigue estos pasos detallados para levantar el proyecto en tu entorno local Windo
 
 ### 1. Preparar el repositorio
 
-Abre una terminal Bash (por ejemplo, **Git Bash**) y asegúrate de estar dentro de la carpeta raíz del proyecto (`Cafeteria_Django/`).
+Asegúrate de estar dentro de la carpeta raíz del proyecto (`Cafeteria_Django/`).
 
 ### 2. Crear y activar el entorno virtual
 
@@ -35,11 +49,12 @@ Es indispensable utilizar un entorno virtual para no afectar otras instalaciones
 
 ```bash
 python -m venv my_env
-source my_env/Scripts/activate
+source my_env\Scripts\activate
+```
 
 ### 3. Instalar las dependencias
 
-Con el entorno virtual activado, instala todos los paquetes necesarios requeridos por el sistema:
+Con el entorno virtual activado, instala todos los paquetes necesarios:
 
 ```bash
 pip install -r requirements.txt
@@ -47,32 +62,23 @@ pip install -r requirements.txt
 
 ### 4. Configurar las variables de entorno
 
-El proyecto utiliza un archivo `.env` para manejar la configuración. Crea un archivo llamado `.env` en la raíz del proyecto (en la misma carpeta donde está `manage.py`) y agrega el siguiente contenido:
+Crea un archivo llamado `.env` en la raíz del proyecto y agrega:
 
 ```env
 DEBUG=True
 SECRET_KEY=tu-clave-secreta-de-django-aqui
 ```
 
-### 5. Aplicar las migraciones de la Base de Datos
+### 5. Aplicar las migraciones
 
-El sistema usa SQLite3 por defecto. Prepara la base de datos creando las tablas necesarias:
+Prepara la base de datos creando las tablas necesarias:
 
 ```bash
 python manage.py makemigrations
 python manage.py migrate
 ```
 
-### 6. Crear un administrador principal (Superusuario)
-
-Para poder acceder al panel de administración y gestionar el catálogo y las reservas:
-
-```bash
-python manage.py createsuperuser
-```
-*(Sigue las instrucciones en consola para definir tu usuario y contraseña. Nota: la contraseña no se mostrará mientras la escribes).*
-
-### 7. Ejecutar el Servidor
+### 6. Ejecutar el Servidor
 
 Inicia el servidor de desarrollo de Django:
 
