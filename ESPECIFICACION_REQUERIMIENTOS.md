@@ -53,6 +53,3 @@
 *   **Frontend**: HTML5, Vanilla JavaScript, Bootstrap 5.
 *   **Admin UI**: Django-Jazzmin con personalización CSS.
 *   **Base de Datos**: SQLite3 (desarrollo).
-
----
-*Fin del documento de especificación.*
