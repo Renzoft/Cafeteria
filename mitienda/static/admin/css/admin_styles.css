@@ -1,4 +1,4 @@
-/* Limpiar la visualización de campos de imagen/archivo en el admin */
+﻿/* Limpiar la visualización de campos de imagen/archivo en el admin */
 .file-upload {
     background: #fdfaf6;
     padding: 20px;
@@ -38,7 +38,7 @@
 }
 
 .file-upload a:before {
-    content: "\f15b"; /* icono de archivo en FontAwesome */
+    content: "\f15b";
     font-family: "Font Awesome 5 Free";
     font-weight: 900;
     margin-right: 8px;
@@ -188,7 +188,7 @@ fieldset h2 {
     background-color: #6f4e37 !important;
     background-image: none !important;
     border-radius: 50% !important;
-    color: transparent !important; /* Ocultar texto original */
+    color: transparent !important;
     font-size: 0 !important;
     text-align: center;
     line-height: 35px;
@@ -217,8 +217,8 @@ fieldset h2 {
     transform: translate(-50%, -50%);
 }
 
-.selector-add:before { content: "\f061"; } /* Arrow right */
-.selector-remove:before { content: "\f060"; } /* Arrow left */
+.selector-add:before { content: "\f061"; }
+.selector-remove:before { content: "\f060"; }
 
 .selector .selector-filter input {
     border: 1px solid #ced4da !important;
@@ -226,4 +226,30 @@ fieldset h2 {
     padding: 5px 15px !important;
     margin: 5px !important;
     width: calc(100% - 20px) !important;
+}
+
+/* Ocultar botones extra de guardado en TODO el admin */
+input[name='_continue'],
+input[name='_addanother'] {
+    display: none !important;
+}
+
+/* Resaltado llamativo para el Monitor de Pedidos */
+.sidebar-highlight-active {
+    background-color: #ffc107 !important;
+    color: #1a1a1a !important;
+    font-weight: 800 !important;
+    border-radius: 8px !important;
+    margin: 2px 5px !important;
+    box-shadow: 0 0 15px rgba(255, 193, 7, 0.4) !important;
+    transition: all 0.3s ease-in-out !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.sidebar-highlight-active i, 
+.sidebar-highlight-active p {
+    color: #1a1a1a !important;
+    margin-bottom: 0 !important;
+    font-weight: 800 !important;
 }

@@ -1,0 +1,108 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block title %}Monitor de Pedidos | Rico Destino{% endblock %}
+
+{% block content_header %}
+<div class="container-fluid">
+    <div class="row mb-2">
+        <div class="col-sm-6">
+            <h1 class="m-0 text-dark">Monitor de Pedidos en Tiempo Real</h1>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-outline card-warning shadow-sm">
+                <div class="card-header bg-white">
+                    <h3 class="card-title text-brown" style="font-weight: 700; color: #6f4e37;">
+                        <i class="fas fa-clock mr-2"></i>
+                        Pedidos Entrantes (Estado: Pendiente)
+                    </h3>
+                    <div class="card-tools">
+                        <span id="last-update" class="text-muted small mr-3">Última actualización: --:--:--</span>
+                        <span class="badge badge-success px-3 py-2"><i class="fas fa-check-circle mr-1"></i> Sistema Activo</span>
+                    </div>
+                </div>
+                <div class="card-body bg-light">
+                    <div id="live-orders-empty" class="text-center py-5">
+                        <div class="mb-3">
+                            <i class="fas fa-coffee fa-3x text-muted opacity-50"></i>
+                        </div>
+                        <h4 class="text-muted">No hay pedidos pendientes en este momento</h4>
+                        <p class="text-muted small">El sistema te notificará automáticamente cuando llegue uno nuevo.</p>
+                    </div>
+                    
+                    <div id="live-orders-list" class="row d-none">
+                        <!-- Pedidos renderizados por JS -->
+                    </div>
+                </div>
+                <div class="card-footer text-center bg-white border-top-0">
+                    <a href="/admin/orders/order/" class="btn btn-outline-secondary btn-sm px-4">
+                        <i class="fas fa-list mr-1"></i> Ver histórico completo de pedidos
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .text-brown { color: #6f4e37; }
+    .order-card-live {
+        border-radius: 15px;
+        border: none;
+        border-left: 6px solid #ffc107;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+        background: #fff;
+        height: 100%;
+    }
+    .order-card-live:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        border-left-color: #e6ac00;
+    }
+    .order-id-badge {
+        background: #f8f9fa;
+        color: #6f4e37;
+        font-weight: 700;
+        padding: 5px 12px;
+        border-radius: 8px;
+        border: 1px solid #eee;
+    }
+</style>
+
+<script>
+    // Flag para el script global
+    window.isMonitorPage = true;
+
+    // Función para renderizar un pedido en el monitor
+    function renderOrderCard(order) {
+        return `
+            <div class="col-md-4 col-sm-6 mb-4 animate__animated animate__fadeInUp">
+                <div class="card order-card-live p-3">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <span class="order-id-badge">#${order.id}</span>
+                        <span class="badge badge-warning">Pendiente</span>
+                    </div>
+                    <h5 class="mb-1" style="font-weight: 700; color: #4a3324;">${order.user_name}</h5>
+                    <p class="text-muted small mb-3">
+                        <i class="far fa-clock mr-1"></i> Pedido a las: <strong>${order.created}</strong>
+                    </p>
+                    <div class="mt-auto">
+                        <a href="/admin/orders/order/${order.id}/change/" class="btn btn-warning btn-sm btn-block text-dark" style="font-weight: 600;">
+                            <i class="fas fa-edit mr-1"></i> Gestionar Pedido
+                        </a>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+
+</script>
+{% endblock %}

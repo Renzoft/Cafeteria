@@ -38,6 +38,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'core.middleware.SeparateAdminSessionMiddleware',  # ← ANTES de SessionMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -138,5 +139,20 @@ CART_SESSION_ID = 'cart'
 
 # Configuración de Jazzmin
 JAZZMIN_SETTINGS = {
+    "site_title": "Rico Destino Admin",
+    "site_header": "Rico Destino",
+    "site_brand": "Rico Destino",
+    "welcome_sign": "Bienvenido al panel de Rico Destino",
+    "copyright": "Rico Destino",
+    "user_avatar": None,
     "changeform_format": "horizontal_tabs",
+    "custom_js": "js/admin_notifications.js",
+    "custom_links": {
+        "orders": [{
+            "name": "Monitor de Pedidos",
+            "url": "/admin/orders/order/monitor/",
+            "icon": "fas fa-broadcast-tower",
+            "permissions": ["orders.view_order"]
+        }],
+    },
 }
