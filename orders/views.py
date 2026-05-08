@@ -2,12 +2,37 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
 from django.contrib.admin.views.decorators import staff_member_required
 from django.db import transaction
-from cart.cart import Cart
-from .models import Order, OrderItem
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.utils import timezone
 
+from cart.cart import Cart
+from .models import Order, OrderItem
 from .forms import OrderCreateForm
+
+
+def generate_qr_base64(url):
+    """Genera un código QR como imagen Base64 a partir de una URL."""
+    import qrcode
+    import io
+    import base64
+
+    qr = qrcode.QRCode(
+        version=1,
+        error_correction=qrcode.constants.ERROR_CORRECT_H,
+        box_size=8,
+        border=2,
+    )
+    qr.add_data(url)
+    qr.make(fit=True)
+
+    img = qr.make_image(fill_color="#4a3324", back_color="#ffffff")
+
+    buffer = io.BytesIO()
+    img.save(buffer, format='PNG')
+    buffer.seek(0)
+    return base64.b64encode(buffer.getvalue()).decode('utf-8')
+
 
 @login_required
 def order_create(request):
@@ -50,7 +75,17 @@ def order_create(request):
                     product.save()
                     
                 cart.clear()
-                return render(request, 'orders/created.html', {'order': order})
+
+                # Generar QR para la página de confirmación
+                from django.urls import reverse
+                validate_path = reverse('orders:order_receipt', args=[order.validation_token])
+                validate_url = request.build_absolute_uri(validate_path)
+                qr_base64 = generate_qr_base64(validate_url)
+
+                return render(request, 'orders/created.html', {
+                    'order': order,
+                    'qr_base64': qr_base64,
+                })
     else:
         form = OrderCreateForm(initial=initial_data)
             
@@ -59,33 +94,28 @@ def order_create(request):
 @login_required
 def order_detail(request, order_id):
     order = get_object_or_404(Order, id=order_id, user=request.user)
-    return render(request, 'orders/detail.html', {'order': order})
 
-@staff_member_required
-def pending_orders_count(request):
+    # Generar QR solo si el pedido no ha sido entregado ni cancelado
+    qr_base64 = None
+    if order.status not in ('Entregado', 'Cancelado'):
+        from django.urls import reverse
+        validate_path = reverse('orders:order_receipt', args=[order.validation_token])
+        validate_url = request.build_absolute_uri(validate_path)
+        qr_base64 = generate_qr_base64(validate_url)
+
+    return render(request, 'orders/detail.html', {
+        'order': order,
+        'qr_base64': qr_base64,
+    })
+
+
+def order_receipt(request, token):
     """
-    Endpoint mejorado que devuelve el conteo y una lista de los pedidos más recientes.
+    Vista pública de solo lectura que funciona como comprobante digital.
+    No requiere inicio de sesión, usa el token UUID como seguridad.
     """
-    pending_orders = Order.objects.filter(status='Pendiente')
-    count = pending_orders.count()
-    last_order = pending_orders.order_by('-created').first()
-    
-    # Lista detallada para el monitor en vivo
-    orders_list = []
-    for o in pending_orders.order_by('-created')[:12]:
-        orders_list.append({
-            'id': o.id,
-            'user_name': f"{o.first_name} {o.last_name}",
-            'created': o.created.strftime('%H:%M:%S'),
-        })
-    
-    data = {
-        'count': count,
-        'last_id': last_order.id if last_order else None,
-        'last_user': f"{last_order.first_name} {last_order.last_name}" if last_order else "",
-        'orders': orders_list,
-    }
-    return JsonResponse(data)
-@staff_member_required
-def admin_notifications_dashboard(request):
-    return render(request, 'admin/orders/notifications.html')
+    order = get_object_or_404(Order, validation_token=token)
+    return render(request, 'orders/receipt.html', {'order': order})
+
+
+

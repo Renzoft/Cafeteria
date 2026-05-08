@@ -173,6 +173,7 @@
 
     <!-- Bootstrap 5 JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmxc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    {% block session_script %}
     <script>
         // Limitar la sesión estrictamente a la pestaña actual
         if (!sessionStorage.getItem('tab_session_active')) {
@@ -194,5 +195,6 @@
         }
         sessionStorage.setItem('tab_session_active', 'true');
     </script>
+    {% endblock %}
 </body>
 </html>

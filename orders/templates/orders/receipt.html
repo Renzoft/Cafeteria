@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Comprobante de Pedido #{{ order.id }} - Rico Destino{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-4 mb-5">
+    <div class="col-md-7">
+        <h2 class="fw-bold mb-4 text-center" style="color: var(--coffee-dark);">
+            <i class="bi bi-receipt me-2" style="color: var(--caramel);"></i> Comprobante de Pedido
+        </h2>
+
+        {% if order.status == 'Entregado' %}
+        <!-- Pedido ya entregado -->
+        <div class="card border-0 shadow-sm" style="border-radius: 15px; overflow: hidden;">
+            <div class="card-header border-0 text-white py-3 text-center" style="background: linear-gradient(135deg, #0dcaf0, #0aa2c0);">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-check-circle-fill me-2"></i> Pedido Ya Entregado</h5>
+            </div>
+            <div class="card-body p-4 p-md-5 text-center" style="background-color: var(--cream-bg);">
+                <div class="mb-4">
+                    <i class="bi bi-box-seam-fill" style="font-size: 4rem; color: #0dcaf0;"></i>
+                </div>
+                <div class="alert alert-info shadow-sm" style="border-radius: 12px; border-left: 4px solid #0dcaf0;">
+                    <h6 class="fw-bold mb-2"><i class="bi bi-info-circle-fill me-1"></i> Información</h6>
+                    <p class="mb-0">
+                        Este pedido <strong>#{{ order.id }}</strong> ya fue entregado a
+                        <strong>{{ order.first_name }} {{ order.last_name }}</strong>
+                        {% if order.delivered_at %}
+                        el <strong>{{ order.delivered_at|date:"d/m/Y" }}</strong> a las <strong>{{ order.delivered_at|date:"H:i" }}</strong>.
+                        {% endif %}
+                    </p>
+                </div>
+                <a href="{% url 'tienda:product_list' %}" class="btn btn-secondary rounded-pill px-4 mt-3">
+                    <i class="bi bi-arrow-left me-1"></i> Ir al menú
+                </a>
+            </div>
+        </div>
+
+        {% else %}
+        <!-- Pedido activo - Mostrar resumen para confirmación -->
+        <div class="card border-0 shadow-sm" style="border-radius: 15px; overflow: hidden;">
+            <div class="card-header border-0 text-white py-3 d-flex justify-content-between align-items-center" style="background: linear-gradient(135deg, var(--coffee-light) 0%, var(--coffee-dark) 100%);">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-clipboard-check me-2"></i> Pedido #{{ order.id }}</h5>
+                <span class="badge rounded-pill px-3 py-2" style="{% if order.status == 'Pendiente' %}background-color: var(--caramel); color: white;{% elif order.status == 'Listo' %}background-color: #198754; color: white;{% else %}background-color: #dc3545; color: white;{% endif %}">
+                    {{ order.get_status_display }}
+                </span>
+            </div>
+            <div class="card-body p-4 p-md-5">
+                <!-- Datos del cliente -->
+                <div class="row mb-4">
+                    <div class="col-sm-6 mb-3 mb-sm-0">
+                        <div class="p-3 rounded-3" style="background-color: var(--cream-bg); border: 1px solid var(--border-color);">
+                            <h6 class="fw-bold mb-2" style="color: var(--caramel);"><i class="bi bi-person-fill me-1"></i> Cliente</h6>
+                            <div style="color: var(--text-dark);"><strong>{{ order.first_name }} {{ order.last_name }}</strong></div>
+                            <div class="small text-muted">{{ order.email }}</div>
+                            {% if order.phone %}
+                            <div class="small text-muted"><i class="bi bi-telephone me-1"></i>{{ order.phone }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="p-3 rounded-3" style="background-color: var(--cream-bg); border: 1px solid var(--border-color);">
+                            <h6 class="fw-bold mb-2" style="color: var(--caramel);"><i class="bi bi-clock-fill me-1"></i> Información</h6>
+                            <div style="color: var(--text-dark);"><strong>Fecha:</strong> {{ order.created|date:"d/m/Y H:i" }}</div>
+                            <div style="color: var(--text-dark);"><strong>Total:</strong> <span class="fw-bold" style="color: var(--coffee-dark);">S/ {{ order.get_total_cost|floatformat:2 }}</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Productos -->
+                <h6 class="fw-bold mb-2" style="color: var(--coffee-dark);"><i class="bi bi-bag-fill me-1"></i> Productos</h6>
+                <div class="table-responsive mb-4" style="border-radius: 10px; border: 1px solid var(--border-color); overflow: hidden;">
+                    <table class="table table-sm mb-0 align-middle">
+                        <thead style="background-color: var(--cream-bg);">
+                            <tr>
+                                <th class="border-0" style="color: var(--coffee-dark);">Producto</th>
+                                <th class="border-0 text-center" style="color: var(--coffee-dark);">Cant.</th>
+                                <th class="border-0 text-end" style="color: var(--coffee-dark);">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in order.items.all %}
+                            <tr>
+                                <td class="fw-bold" style="color: var(--coffee-dark);">{{ item.product.name }}</td>
+                                <td class="text-center"><span class="badge bg-light text-dark border">{{ item.quantity }}</span></td>
+                                <td class="text-end" style="color: var(--coffee-dark);">S/ {{ item.get_cost|floatformat:2 }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot style="background-color: var(--cream-bg);">
+                            <tr class="fw-bold">
+                                <td colspan="2" class="text-end" style="color: var(--text-dark);">Total</td>
+                                <td class="text-end" style="color: var(--caramel); font-size: 1.1rem;">S/ {{ order.get_total_cost|floatformat:2 }}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <div class="text-center mt-4">
+                    <p class="text-muted small mb-3">Muestra este comprobante en el mostrador para recoger tu pedido.</p>
+                    <a href="{% url 'tienda:product_list' %}" class="text-muted small text-decoration-none">
+                        <i class="bi bi-arrow-left me-1"></i> Volver a la tienda
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+
+{% block session_script %}
+<!-- Deshabilitamos el control estricto de pestañas para esta vista de admin
+     porque al escanear un QR con el celular se abre una pestaña nueva y
+     cerraría la sesión erróneamente -->
+<script>
+    sessionStorage.setItem('tab_session_active', 'true');
+</script>
+{% endblock %}

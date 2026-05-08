@@ -1,3 +1,4 @@
+import uuid
 from django.db import models
 from mitienda.models import Product
 from django.conf import settings
@@ -18,6 +19,8 @@ class Order(models.Model):
     created = models.DateTimeField(auto_now_add=True, verbose_name='creado')
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pendiente', verbose_name='estado')
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True, verbose_name='usuario')
+    validation_token = models.UUIDField(default=uuid.uuid4, unique=True, editable=False, verbose_name='token de validación')
+    delivered_at = models.DateTimeField(null=True, blank=True, verbose_name='fecha de entrega')
 
     class Meta:
         verbose_name = 'Pedido'

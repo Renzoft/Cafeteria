@@ -117,12 +117,18 @@ class OrderAdmin(admin.ModelAdmin):
         from django.urls import reverse
         from django.utils.html import format_html
         url = reverse('admin:orders_order_delete', args=[obj.id])
-        return format_html(
-            '<a class="btn btn-sm btn-danger" href="{}" style="padding: 2px 10px; font-weight: 600;">'
-            '<i class="fas fa-trash"></i> Eliminar</a>',
-            url
-        )
+        return format_html('<a class="btn btn-danger btn-sm" href="{}"><i class="fas fa-trash"></i> Eliminar</a>', url)
     delete_button.short_description = 'Acciones'
+
+    def save_model(self, request, obj, form, change):
+        from django.utils import timezone
+        # Si el estado cambió a 'Entregado' y no tiene fecha de entrega, se la asignamos
+        if change and 'status' in form.changed_data:
+            if obj.status == 'Entregado' and not obj.delivered_at:
+                obj.delivered_at = timezone.now()
+            elif obj.status != 'Entregado':
+                obj.delivered_at = None
+        super().save_model(request, obj, form, change)
 
     def delete_model(self, request, obj):
         for item in obj.items.all():
