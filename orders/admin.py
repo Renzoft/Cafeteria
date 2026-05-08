@@ -79,42 +79,34 @@ class OrderAdmin(admin.ModelAdmin):
 
     def recent_activity_api(self, request):
         """
-        Endpoint que devuelve las últimas 6 acciones del log de administración
-        para actualizar el dashboard en tiempo real.
+        Endpoint que devuelve las últimas 6 órdenes existentes 
+        directamente desde la tabla Order (no desde LogEntry).
+        Siempre refleja el estado real de la base de datos.
         """
-        from django.contrib.admin.models import LogEntry
         from django.utils.timesince import timesince
         from django.utils import timezone
         from django.urls import reverse
 
-        # Obtenemos las últimas 6 acciones de forma global, ordenadas por ID descendente
-        actions = LogEntry.objects.all().select_related('content_type', 'user').order_by('-id')[:6]
+        # Consultar directamente las últimas 6 órdenes que existen en la BD
+        orders = Order.objects.all().order_by('-id')[:6]
         
         activity = []
-        for action in actions:
-            icon_class = "fas fa-plus-circle bg-blue"
-            if action.is_change():
-                icon_class = "fas fa-edit bg-green"
-            elif action.is_deletion():
-                icon_class = "fas fa-trash bg-red"
-                
+        for order in orders:
             try:
-                time_str = f"Hace {timesince(action.action_time, timezone.now())}"
-            except:
-                time_str = action.action_time.strftime('%d/%m/%Y %H:%M')
+                time_str = f"Hace {timesince(order.created, timezone.now())}"
+            except Exception:
+                time_str = order.created.strftime('%d/%m/%Y %H:%M')
 
-            edit_url = None
-            if action.content_type and action.object_id and not action.is_deletion():
-                try:
-                    edit_url = reverse(f'admin:{action.content_type.app_label}_{action.content_type.model}_change', args=[action.object_id])
-                except:
-                    pass
+            try:
+                edit_url = reverse('admin:orders_order_change', args=[order.id])
+            except Exception:
+                edit_url = None
 
             activity.append({
-                'id': action.id,
-                'title': action.object_repr,
-                'user': action.user.username if action.user else 'Sistema',
-                'icon': icon_class,
+                'id': order.id,
+                'title': f"Pedido #{order.id}",
+                'user': f"{order.first_name} {order.last_name}",
+                'icon': 'fas fa-shopping-cart bg-blue',
                 'time': time_str,
                 'url': edit_url,
             })
