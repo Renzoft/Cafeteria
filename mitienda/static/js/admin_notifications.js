@@ -7,9 +7,11 @@
     'use strict';
 
     // Configuración
-    const POLLING_INTERVAL = 30000; // 30 segundos
     const API_URL = '/admin/orders/order/api/pending-count/';
+    const ACTIVITY_API_URL = '/admin/orders/order/api/recent-activity/';
     const MONITOR_URL = '/admin/orders/order/monitor/';
+    const POLLING_INTERVAL = 30000; // 30 segundos para pedidos
+    const ACTIVITY_INTERVAL = 10000; // 10 segundos para actividad reciente
     const SOUND_URL = '/static/sounds/notification.mp3';
 
     let lastOrderId = null;
@@ -264,41 +266,94 @@
         }
     }
 
+    // Actualiza el dashboard (Acciones Recientes) en tiempo real
+    function updateRecentActivity(data) {
+        // Buscar el contenedor del timeline de Jazzmin
+        const timeline = document.querySelector('.timeline') || document.querySelector('#recent-actions-module .timeline');
+        if (!timeline) return;
+
+        // Limpiar para reconstruir
+        timeline.innerHTML = '';
+
+        if (!data.activity || data.activity.length === 0) {
+            timeline.innerHTML = '<div class="p-3 text-center text-muted">No hay actividad reciente.</div>';
+            return;
+        }
+
+        data.activity.forEach(item => {
+            const entry = document.createElement('div');
+            
+            // Estructura de Jazzmin
+            entry.innerHTML = `
+                <i class="${item.icon}"></i>
+                <div class="timeline-item">
+                    <span class="time"><i class="fas fa-clock mr-1"></i>${item.time}</span>
+                    <h3 class="timeline-header">
+                        ${item.url ? `<a href="${item.url}">${item.title}</a>` : `<span>${item.title}</span>`}
+                    </h3>
+                </div>
+            `;
+            timeline.appendChild(entry);
+        });
+        
+        // Icono final
+        const endIcon = document.createElement('div');
+        endIcon.innerHTML = '<i class="fas fa-clock bg-gray"></i>';
+        timeline.appendChild(endIcon);
+    }
+
     async function checkUpdates() {
         try {
-            const response = await fetch(API_URL, {
-                method: 'GET',
-                headers: { 'X-CSRFToken': getCookie('csrftoken') }
-            });
+            // Hacemos ambas peticiones en paralelo
+            const [ordersRes, activityRes] = await Promise.all([
+                fetch(API_URL, {
+                    method: 'GET',
+                    headers: { 'X-CSRFToken': getCookie('csrftoken') }
+                }),
+                fetch(ACTIVITY_API_URL, {
+                    method: 'GET',
+                    headers: { 'X-CSRFToken': getCookie('csrftoken') }
+                })
+            ]);
 
-            if (!response.ok) return;
+            if (ordersRes.ok) {
+                const data = await ordersRes.json();
+                
+                // Actualizar sidebar
+                updateSidebarHighlight(data.count);
 
-            const data = await response.json();
+                // Actualizar monitor si estamos en esa página
+                if (window.isMonitorPage) {
+                    updateMonitorPage(data);
+                }
 
-            // Actualizar sidebar
-            updateSidebarHighlight(data.count);
-
-            // Actualizar monitor si estamos en esa página
-            if (window.isMonitorPage) {
-                updateMonitorPage(data);
+                // Primera ejecución: solo guardar el ID
+                if (isFirstRun) {
+                    lastOrderId = data.last_id;
+                    isFirstRun = false;
+                } else if (data.last_id && data.last_id !== lastOrderId) {
+                    // Nuevo pedido detectado
+                    lastOrderId = data.last_id;
+                    playNotificationSound();
+                    showToast(data.last_id, data.last_user);
+                }
             }
 
-            // Primera ejecución: solo guardar el ID
-            if (isFirstRun) {
-                lastOrderId = data.last_id;
-                isFirstRun = false;
-                return;
-            }
-
-            // Nuevo pedido detectado
-            if (data.last_id && data.last_id !== lastOrderId) {
-                lastOrderId = data.last_id;
-                playNotificationSound();
-                showToast(data.last_id, data.last_user);
+            // Procesar la respuesta de actividad
+            if (activityRes.ok) {
+                const activityData = await activityRes.json();
+                const isDashboard = document.body.classList.contains('dashboard') || 
+                                    window.location.pathname === '/admin/' || 
+                                    window.location.pathname === '/admin' ||
+                                    window.location.pathname.endsWith('/admin/index/');
+                
+                if (isDashboard) {
+                    updateRecentActivity(activityData);
+                }
             }
 
         } catch (error) {
-            console.error('Error en notificaciones:', error);
+            console.error('Error en notificaciones o actividad:', error);
         }
     }
 
@@ -322,7 +377,7 @@
         injectStyles();
         checkUpdates();
         setInterval(checkUpdates, POLLING_INTERVAL);
-        
+
         // Ejecutar ocultación de botones
         hideRedundantButtons();
         // Re-ejecutar tras un pequeño delay para manejar carga dinámica de Jazzmin

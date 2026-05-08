@@ -1,0 +1,26 @@
+/* Ocultar la columna de iconos y la línea vertical en la sección de "Acciones recientes" del panel de admin */
+.timeline > div > i, 
+.timeline > div > [class*="fa-"],
+.timeline > div > .glyphicon,
+.timeline > div > .ion {
+    display: none !important;
+}
+
+.timeline::before {
+    display: none !important;
+}
+
+/* Ajustar el margen izquierdo para que el contenido se pegue a la izquierda al quitar los iconos */
+.timeline > div > .timeline-item {
+    margin-left: 0 !important;
+    margin-bottom: 10px !important;
+}
+
+/* Ocultar el cuerpo del timeline (mensajes de cambio como "[]") para mantener uniformidad */
+.timeline-body {
+    display: none !important;
+}
+
+.timeline > div {
+    margin-right: 0 !important;
+}

@@ -147,6 +147,7 @@ JAZZMIN_SETTINGS = {
     "user_avatar": None,
     "changeform_format": "horizontal_tabs",
     "custom_js": "js/admin_notifications.js",
+    "custom_css": "css/custom_admin.css",
     "custom_links": {
         "orders": [{
             "name": "Monitor de Pedidos",
