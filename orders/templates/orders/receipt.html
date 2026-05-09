@@ -68,7 +68,7 @@
                 <!-- Productos -->
                 <h6 class="fw-bold mb-2" style="color: var(--coffee-dark);"><i class="bi bi-bag-fill me-1"></i> Productos</h6>
                 <div class="table-responsive mb-4" style="border-radius: 10px; border: 1px solid var(--border-color); overflow: hidden;">
-                    <table class="table table-sm mb-0 align-middle">
+                    <table class="table mb-0 align-middle">
                         <thead style="background-color: var(--cream-bg);">
                             <tr>
                                 <th class="border-0" style="color: var(--coffee-dark);">Producto</th>
@@ -95,10 +95,12 @@
                 </div>
 
                 <div class="text-center mt-4">
-                    <p class="text-muted small mb-3">Muestra este comprobante en el mostrador para recoger tu pedido.</p>
-                    <a href="{% url 'tienda:product_list' %}" class="text-muted small text-decoration-none">
-                        <i class="bi bi-arrow-left me-1"></i> Volver a la tienda
-                    </a>
+                    <p class="text-muted mb-4">Muestra este comprobante en el mostrador para recoger tu pedido.</p>
+                    <div class="d-grid">
+                        <a href="{% url 'tienda:product_list' %}" class="btn btn-primary btn-lg rounded-pill shadow-sm w-100">
+                            <i class="bi bi-arrow-left me-1"></i> Volver a la tienda
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
