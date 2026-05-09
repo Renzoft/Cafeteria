@@ -7,26 +7,27 @@ El sistema se distingue por una interfaz de usuario cálida y armónica, inspira
 ## Características Principales
 
 *   **Interfaz Tematizada**: Diseño exclusivo "Coffee Shop" con paleta de colores cálida, tarjetas redondeadas y micro-animaciones (CSS puro).
-*   **Catálogo Interactivo**: Listado dinámico de productos organizados por categorías.
-*   **Carrito Persistente**: Sistema de carrito de compras integrado directamente a la base de datos que se vincula al iniciar sesión.
-*   **Perfiles de Usuario Completos**: Registro y edición de perfil con foto, teléfono, fecha de nacimiento y dirección.
-*   **Historial de Reservas**: Vista dedicada para que los usuarios puedan dar seguimiento al estado de sus pedidos (Pendiente, Listo, Entregado, Cancelado).
-*   **Sesiones Independientes (Multilogin)**: Middleware personalizado que permite mantener sesiones abiertas simultáneamente como administrador y como usuario en el mismo navegador, utilizando cookies separadas (`admin_sessionid` y `sessionid`).
+*   **Diseño Mobile-First**: Interfaz 100% optimizada para dispositivos móviles con navegación simplificada, tablas con scroll horizontal y campos táctiles.
+*   **Comprobantes Digitales (QR)**: Generación automática de códigos QR para cada reserva, permitiendo a los clientes acceder a un recibo digital público y seguro sin necesidad de iniciar sesión.
+*   **Catálogo Interactivo**: Listado dinámico de productos organizados por categorías con carga optimizada.
+*   **Carrito Persistente**: Sistema de carrito vinculado directamente a la base de datos para no perder la selección al cambiar de dispositivo.
+*   **Perfiles de Usuario**: Gestión completa de información personal y preferencias.
+*   **Historial de Reservas**: Seguimiento en tiempo real del estado de los pedidos (Pendiente, Listo, Entregado, Cancelado).
+*   **Seguridad de Sesiones**: Aislamiento estricto de sesiones por pestaña del navegador (`sessionStorage`) y cookies independientes para administración.
 
 ## Sistema de Notificaciones en Tiempo Real (Admin)
 
 El panel de administración cuenta con un robusto sistema de monitoreo en tiempo vivo:
 
-*   **Monitor de Pedidos**: Panel dedicado accesible desde `/admin/orders/order/monitor/` que muestra las reservas entrantes sin necesidad de recargar la página.
-*   **Alertas Visuales y Sonoras**: Notificaciones tipo *Toast* personalizadas y alertas sonoras al detectar nuevos pedidos.
-*   **Sidebar Dinámico**: Resaltado visual (pulsación ámbar) y badges en la barra lateral del admin para indicar la cantidad de pedidos pendientes de revisión.
-*   **API Integrada**: Sistema de polling optimizado que consulta el estado de las órdenes directamente desde el ecosistema del admin para mayor seguridad.
+*   **Monitor de Pedidos**: Panel dedicado que muestra las reservas entrantes sin necesidad de recargar la página (polling de 30s).
+*   **Alertas Visuales y Sonoras**: Notificaciones tipo *Toast* y alertas sonoras al detectar nuevos pedidos.
+*   **Sidebar Dinámico**: Resaltado visual (pulsación ámbar) y badges para pedidos pendientes.
 
 ## Administración y UI/UX
 
-*   **Panel Jazzmin Optimizado**: Interfaz administrativa moderna con estilos personalizados en `admin_styles.css`.
-*   **Simplificación de Formularios**: Eliminación de botones redundantes en la edición de pedidos para un flujo de trabajo más directo (manteniendo solo Guardar, Eliminar e Histórico).
-*   **Gestión de Stock**: Lógica automática para restaurar el stock de productos al cancelar o eliminar reservas.
+*   **Panel Jazzmin Optimizado**: Interfaz administrativa moderna y estilizada.
+*   **Simplificación de Flujos**: Eliminación de botones redundantes en la edición de pedidos para mayor agilidad.
+*   **Gestión de Stock Inteligente**: Restauración automática de stock al cancelar o eliminar reservas.
 
 ## Requisitos Previos
 
